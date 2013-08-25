@@ -52,6 +52,9 @@ ModelImporter:
     100092: ikHandle2
     100094: nurbsCircle1
     100096: nurbsCircle2
+    100098: Bomb
+    100100: group1
+    100102: pasted__BombManBomb
     400000: //RootNode
     400002: pCube1
     400004: pCube2
@@ -101,22 +104,30 @@ ModelImporter:
     400092: ikHandle2
     400094: nurbsCircle1
     400096: nurbsCircle2
+    400098: Bomb
+    400100: group1
+    400102: pasted__BombManBomb
     2300000: pCube2
     2300002: pasted__pCube2
     2300004: pPlane2
     2300006: Cape
     2300008: Glasses
+    2300010: Bomb
+    2300012: Sidekick
     3300000: pCube2
     3300002: pasted__pCube2
     3300004: pPlane2
     3300006: Cape
     3300008: Glasses
+    3300010: Bomb
+    3300012: Sidekick
     4300000: pCube2
     4300002: pasted__pCube2
     4300004: pPlane2
     4300006: Sidekick
     4300008: Cape
     4300010: Glasses
+    4300012: Bomb
     9500000: //RootNode
     13700000: pasted__pCube2
     13700002: Sidekick

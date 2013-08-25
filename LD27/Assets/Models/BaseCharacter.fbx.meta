@@ -37,6 +37,13 @@ ModelImporter:
     100062: Sidekick
     100064: Spine_1
     100066: Spine_2
+    100068: group1
+    100070: ikHandle1
+    100072: ikHandle2
+    100074: nurbsCircle1
+    100076: nurbsCircle2
+    100078: pasted__BombManBomb
+    100080: pasted__pSphere1
     400000: //RootNode
     400002: group
     400004: pasted__pCube2
@@ -71,22 +78,34 @@ ModelImporter:
     400062: Sidekick
     400064: Spine_1
     400066: Spine_2
+    400068: group1
+    400070: ikHandle1
+    400072: ikHandle2
+    400074: nurbsCircle1
+    400076: nurbsCircle2
+    400078: pasted__BombManBomb
+    400080: pasted__pSphere1
     2300000: pasted__pCube2
     2300002: pCube2
     2300004: pPlane2
     2300006: Cape
     2300008: Glasses
+    2300010: pasted__pSphere1
+    2300012: Sidekick
     3300000: pasted__pCube2
     3300002: pCube2
     3300004: pPlane2
     3300006: Cape
     3300008: Glasses
+    3300010: pasted__pSphere1
+    3300012: Sidekick
     4300000: pasted__pCube2
     4300002: pPlane2
     4300004: pCube2
     4300006: Sidekick
     4300008: Cape
     4300010: Glasses
+    4300012: pasted__pSphere1
     7400000: Idle
     9500000: //RootNode
     11100000: //RootNode
