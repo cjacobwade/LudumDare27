@@ -42,6 +42,12 @@ ModelImporter:
     100072: Spine_2
     100074: pCube1
     100076: pCube2
+    100078: polySurface1
+    100080: polySurface2
+    100082: polySurface3
+    100084: transform1
+    100086: transform2
+    100088: transform3
     400000: //RootNode
     400002: Cape
     400004: Glasses
@@ -81,18 +87,28 @@ ModelImporter:
     400072: Spine_2
     400074: pCube1
     400076: pCube2
+    400078: polySurface1
+    400080: polySurface2
+    400082: polySurface3
+    400084: transform1
+    400086: transform2
+    400088: transform3
     2300000: Cape
     2300002: Glasses
     2300004: pasted__Bomb
     2300006: pasted__pCube1
     2300008: pCube1
     2300010: pCube2
+    2300012: polySurface2
+    2300014: polySurface3
     3300000: Cape
     3300002: Glasses
     3300004: pasted__Bomb
     3300006: pasted__pCube1
     3300008: pCube1
     3300010: pCube2
+    3300012: polySurface2
+    3300014: polySurface3
     4300000: Sidekick
     4300002: Cape
     4300004: Glasses
@@ -100,6 +116,8 @@ ModelImporter:
     4300008: pasted__Bomb
     4300010: pCube1
     4300012: pCube2
+    4300014: polySurface2
+    4300016: polySurface3
     7400000: Take 001
     9500000: //RootNode
     13700000: Sidekick
