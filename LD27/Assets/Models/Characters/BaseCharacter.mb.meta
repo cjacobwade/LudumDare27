@@ -48,6 +48,27 @@ ModelImporter:
     100084: transform1
     100086: transform2
     100088: transform3
+    100090: Left_Wing
+    100092: Left_Wing_1
+    100094: Left_Wing_2
+    100096: Left_Wing_3
+    100098: Left_Wing_Tip
+    100100: pCube3
+    100102: Right_Wing
+    100104: Right_Wing_1
+    100106: Right_Wing_2
+    100108: Right_Wing_3
+    100110: Right_Wing_Tip
+    100112: Wing_Base
+    100114: joint1
+    100116: joint2
+    100118: joint3
+    100120: joint4
+    100122: joint5
+    100124: joint6
+    100126: joint7
+    100128: joint8
+    100130: joint9
     400000: //RootNode
     400002: Cape
     400004: Glasses
@@ -93,6 +114,27 @@ ModelImporter:
     400084: transform1
     400086: transform2
     400088: transform3
+    400090: Left_Wing
+    400092: Left_Wing_1
+    400094: Left_Wing_2
+    400096: Left_Wing_3
+    400098: Left_Wing_Tip
+    400100: pCube3
+    400102: Right_Wing
+    400104: Right_Wing_1
+    400106: Right_Wing_2
+    400108: Right_Wing_3
+    400110: Right_Wing_Tip
+    400112: Wing_Base
+    400114: joint1
+    400116: joint2
+    400118: joint3
+    400120: joint4
+    400122: joint5
+    400124: joint6
+    400126: joint7
+    400128: joint8
+    400130: joint9
     2300000: Cape
     2300002: Glasses
     2300004: pasted__Bomb
@@ -118,9 +160,11 @@ ModelImporter:
     4300012: pCube2
     4300014: polySurface2
     4300016: polySurface3
+    4300018: pCube3
     7400000: Take 001
     9500000: //RootNode
     13700000: Sidekick
+    13700002: pCube3
   materials:
     importMaterials: 1
     materialName: 0

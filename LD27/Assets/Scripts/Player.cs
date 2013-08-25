@@ -80,7 +80,7 @@ public class Player : MonoBehaviour {
 				else PlayAnimation("RunLeft",animSpeed*2);
 				break;
 			case physicsStates.jump:
-				if(moveDirection.y <0)
+				if(ySpeed <0)
 					physicsFlag = physicsStates.fall;
 				break;
 			case physicsStates.punch:
@@ -105,10 +105,18 @@ public class Player : MonoBehaviour {
 	
 	void PlayerInput()
 	{
-		if( Input.GetAxis("Horizontal") == 0)
-			physicsFlag = physicsStates.idle;
-		else if(physicsFlag == physicsStates.idle)
+		if(cc.isGrounded)
+		{
 			physicsFlag = physicsStates.run;
+			if( Input.GetAxis("Horizontal") == 0)
+				physicsFlag = physicsStates.idle;
+		}
+		else
+		{
+			if(physicsFlag == physicsStates.fall)
+				Fall();
+		}
+		
 		
 		if(Input.GetButtonDown("Jump"))
 		{
@@ -148,16 +156,25 @@ public class Player : MonoBehaviour {
 	{
 		if(cc.isGrounded)
 		{
-
 			if(moveDirection.x>0)
-				PlayAnimation("Idle",1);
+				PlayAnimation("RightJump",1,.2f);
 			else if(moveDirection.x<0)
-				PlayAnimation("LeftJump",1,.05f);
+				PlayAnimation("LeftJump",1,.2f);
 			else
-				PlayAnimation("Idle",1);
-			physicsFlag = physicsStates.jump;
+				PlayAnimation("Jump",1,.2f);
 			ySpeed = jumpSpeed;
+			physicsFlag = physicsStates.jump;
 		}
+	}
+	
+	void Fall()
+	{
+		if(moveDirection.x>0)
+			PlayAnimation("RightFall",1,.2f);
+		else if(moveDirection.x<0)
+			PlayAnimation("LeftFall",1,.2f);
+		else
+			PlayAnimation("Fall",1,.2f);
 	}
 	
 	void Punch()
