@@ -8,6 +8,7 @@ public class Player : MonoBehaviour {
 	public int moveSpeed, jumpSpeed;
 	public float maxGravity, gravityRate;
 	float ySpeed = 0;
+	bool running = false;
 	
 	public GameObject[] ragdoll;
 	public Texture2D[] skin;
@@ -18,12 +19,28 @@ public class Player : MonoBehaviour {
 		idle,
 		run,
 		jump,
+		fall,
 		punch,
 		special,
 		swap,
 		death
 	}
 	
+	public enum characterTags
+	{
+		bigfist,
+		gravitar,
+		keytar,
+		bombguy,
+		mooman,
+		spotlight,
+		matador,
+		transparency,
+		tubs,
+		wings
+	}
+	
+	characterTags currentChar;
 	physicsStates physicsFlag;
 	
 	// Use this for initialization
@@ -33,7 +50,7 @@ public class Player : MonoBehaviour {
 	}
 	
 	// Update is called once per frame
-	void FixedUpdate () 
+	void Update () 
 	{
 		PlayerInput();
 		PhysicsFlags();
@@ -55,12 +72,16 @@ public class Player : MonoBehaviour {
 		{
 			case physicsStates.idle:
 				PlayAnimation("Idle",1);
-			break;
+				running = false;
+				break;
 			case physicsStates.run:
-				PlayAnimation("Idle",1);
+				float animSpeed = Mathf.Abs (Input.GetAxis("Horizontal"));
+				if(moveDirection.x>0) PlayAnimation("RunRight",animSpeed*2);
+				else PlayAnimation("RunLeft",animSpeed*2);
 				break;
 			case physicsStates.jump:
-				PlayAnimation("Idle",1);
+				if(moveDirection.y <0)
+					physicsFlag = physicsStates.fall;
 				break;
 			case physicsStates.punch:
 				PlayAnimation("Idle",1);
@@ -77,8 +98,18 @@ public class Player : MonoBehaviour {
 		}
 	}
 	
+	void State(physicsStates state,string anim, bool interrupt)
+	{
+		
+	}
+	
 	void PlayerInput()
 	{
+		if( Input.GetAxis("Horizontal") == 0)
+			physicsFlag = physicsStates.idle;
+		else if(physicsFlag == physicsStates.idle)
+			physicsFlag = physicsStates.run;
+		
 		if(Input.GetButtonDown("Jump"))
 		{
 			Jump ();
@@ -115,8 +146,18 @@ public class Player : MonoBehaviour {
 		
 	void Jump()
 	{
-		physicsFlag = physicsStates.jump;
-		ySpeed = jumpSpeed;
+		if(cc.isGrounded)
+		{
+
+			if(moveDirection.x>0)
+				PlayAnimation("Idle",1);
+			else if(moveDirection.x<0)
+				PlayAnimation("LeftJump",1,.05f);
+			else
+				PlayAnimation("Idle",1);
+			physicsFlag = physicsStates.jump;
+			ySpeed = jumpSpeed;
+		}
 	}
 	
 	void Punch()
@@ -145,24 +186,37 @@ public class Player : MonoBehaviour {
 	
 	#region PlayAnimation
 	
-	void PlayAnimation(string clip, float speed, float time)
+	void PlayAnimation(string clip, float speed, float fade)
 	{
-		animation[clip].time = time;
 		animation[clip].speed = speed;
 		animation[clip].enabled = true;
 		animation.Sample();
-		animation.Play(clip);
+		animation.CrossFade(clip,fade);
 	}
 	
 	void PlayAnimation(string clip, float speed)
 	{
 		animation[clip].speed = speed;
-		animation.Play(clip);
+		animation.CrossFade(clip, .2f);
 	}
 
 	void PlayAnimation(string clip)
 	{
-		animation.Play(clip);
+		animation.CrossFade(clip,.2f);
+	}
+	
+	IEnumerator AnimationBuildup(string startAnim, string endAnim,float input, bool value)
+	{
+		PlayAnimation(startAnim,input);
+		yield return new WaitForSeconds(animation[startAnim].length*input*2);
+		BoolToggle(ref running);
+		//PlayAnimation("Run", input*2);
+		yield return new WaitForSeconds(animation[startAnim].length*input*2);
+	}
+	
+	void BoolToggle(ref bool value)
+	{
+		value = !value;
 	}
 	
 	#endregion
