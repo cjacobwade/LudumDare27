@@ -8,21 +8,89 @@ ModelImporter:
     100004: pasted__pCube2
     100006: pCube2
     100008: pPlane2
+    100010: Cape
+    100012: Glasses
+    100014: Head
+    100016: Hip
+    100018: Left_Ankle
+    100020: Left_Arm
+    100022: Left_Foot
+    100024: Left_Forearm
+    100026: Left_Hand
+    100028: Left_Hip
+    100030: Left_Knee
+    100032: Left_Leg
+    100034: Left_Shoulder
+    100036: Left_Wrist
+    100038: Neck_1
+    100040: Neck_2
+    100042: Right_Ankle
+    100044: Right_Arm
+    100046: Right_Foot
+    100048: Right_Forearm
+    100050: Right_Hand
+    100052: Right_Hip
+    100054: Right_Knee
+    100056: Right_Leg
+    100058: Right_Shoulder
+    100060: Right_Wrist
+    100062: Sidekick
+    100064: Spine_1
+    100066: Spine_2
     400000: //RootNode
     400002: group
     400004: pasted__pCube2
     400006: pCube2
     400008: pPlane2
+    400010: Cape
+    400012: Glasses
+    400014: Head
+    400016: Hip
+    400018: Left_Ankle
+    400020: Left_Arm
+    400022: Left_Foot
+    400024: Left_Forearm
+    400026: Left_Hand
+    400028: Left_Hip
+    400030: Left_Knee
+    400032: Left_Leg
+    400034: Left_Shoulder
+    400036: Left_Wrist
+    400038: Neck_1
+    400040: Neck_2
+    400042: Right_Ankle
+    400044: Right_Arm
+    400046: Right_Foot
+    400048: Right_Forearm
+    400050: Right_Hand
+    400052: Right_Hip
+    400054: Right_Knee
+    400056: Right_Leg
+    400058: Right_Shoulder
+    400060: Right_Wrist
+    400062: Sidekick
+    400064: Spine_1
+    400066: Spine_2
     2300000: pasted__pCube2
     2300002: pCube2
     2300004: pPlane2
+    2300006: Cape
+    2300008: Glasses
     3300000: pasted__pCube2
     3300002: pCube2
     3300004: pPlane2
+    3300006: Cape
+    3300008: Glasses
     4300000: pasted__pCube2
     4300002: pPlane2
     4300004: pCube2
+    4300006: Sidekick
+    4300008: Cape
+    4300010: Glasses
+    7400000: Idle
     9500000: //RootNode
+    11100000: //RootNode
+    13700000: Sidekick
   materials:
     importMaterials: 1
     materialName: 0
@@ -35,7 +103,28 @@ ModelImporter:
     animationPositionError: .5
     animationScaleError: .5
     animationWrapMode: 0
-    clipAnimations: []
+    clipAnimations:
+    - name: Idle
+      takeName: Take 001
+      firstFrame: 1
+      lastFrame: 120
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      transformMask: []
     isReadable: 1
   meshes:
     lODScreenPercentages: []
@@ -73,5 +162,5 @@ ModelImporter:
     rootMotionBoneName: 
   lastHumanDescriptionAvatarSource: {instanceID: 0}
   additionalBone: 1
-  animationType: 2
+  animationType: 1
   userData: 
