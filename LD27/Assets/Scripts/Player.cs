@@ -231,6 +231,13 @@ public class Player : MonoBehaviour {
 		yield return new WaitForSeconds(animation[startAnim].length*input*2);
 	}
 	
+	IEnumerator PlayerSwap()
+	{
+		//Wait ten seconds
+		yield return new WaitForSeconds(10);
+		//Swap
+	}
+	
 	void BoolToggle(ref bool value)
 	{
 		value = !value;

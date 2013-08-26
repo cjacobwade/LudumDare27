@@ -69,6 +69,15 @@ ModelImporter:
     100126: joint7
     100128: joint8
     100130: joint9
+    100132: Glasses1
+    100134: Glasses2
+    100136: polySurface4
+    100138: polySurface5
+    100140: polySurface6
+    100142: Glasses3
+    100144: pCube4
+    100146: polySurface7
+    100148: polySurface8
     400000: //RootNode
     400002: Cape
     400004: Glasses
@@ -135,6 +144,15 @@ ModelImporter:
     400126: joint7
     400128: joint8
     400130: joint9
+    400132: Glasses1
+    400134: Glasses2
+    400136: polySurface4
+    400138: polySurface5
+    400140: polySurface6
+    400142: Glasses3
+    400144: pCube4
+    400146: polySurface7
+    400148: polySurface8
     2300000: Cape
     2300002: Glasses
     2300004: pasted__Bomb
@@ -143,6 +161,14 @@ ModelImporter:
     2300010: pCube2
     2300012: polySurface2
     2300014: polySurface3
+    2300016: Glasses2
+    2300018: polySurface4
+    2300020: polySurface5
+    2300022: polySurface6
+    2300024: Glasses3
+    2300026: pCube4
+    2300028: polySurface7
+    2300030: polySurface8
     3300000: Cape
     3300002: Glasses
     3300004: pasted__Bomb
@@ -151,6 +177,14 @@ ModelImporter:
     3300010: pCube2
     3300012: polySurface2
     3300014: polySurface3
+    3300016: Glasses2
+    3300018: polySurface4
+    3300020: polySurface5
+    3300022: polySurface6
+    3300024: Glasses3
+    3300026: pCube4
+    3300028: polySurface7
+    3300030: polySurface8
     4300000: Sidekick
     4300002: Cape
     4300004: Glasses
@@ -161,6 +195,14 @@ ModelImporter:
     4300014: polySurface2
     4300016: polySurface3
     4300018: pCube3
+    4300020: polySurface4
+    4300022: polySurface5
+    4300024: polySurface6
+    4300026: Glasses2
+    4300028: polySurface7
+    4300030: Glasses3
+    4300032: pCube4
+    4300034: polySurface8
     7400000: Take 001
     9500000: //RootNode
     13700000: Sidekick
