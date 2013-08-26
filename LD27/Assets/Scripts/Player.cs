@@ -5,14 +5,22 @@ public class Player : MonoBehaviour {
 	
 	CharacterController cc;
 	public static Vector3 moveDirection;
-	public int moveSpeed, jumpSpeed;
-	public float maxGravity, gravityRate;
+	public int moveSpeed, jumpSpeed, currentSkin = 0;
+	public float startingZ, maxGravity, gravityRate;
 	float ySpeed = 0;
+	public static bool ragdollMode = false;
 	bool running = false,jumpAgain = false;
 	
+
+	public GameObject modelObj, capeObj;
+	public Material model, cape, transparentModel, transparentCape;
+	Material startModel, startCape;
 	public GameObject[] ragdoll;
 	public Texture2D[] skin;
-	public GameObject[] bombProps, keytarProps, gravatarProps, spotlightProps, matadorProps, tubsProps, wingsProps;
+	public Material[] mat;
+	//public Color[] outline
+	public GameObject[] fistProps, keytarProps, bombProps, mooProps, gravitarProps, spotlightProps, matadorProps, transparencyProps, tubsProps, wingsProps;
+	public GameObject [][] props;
 	
 	public enum physicsStates
 	{
@@ -29,10 +37,10 @@ public class Player : MonoBehaviour {
 	public enum characterTags
 	{
 		bigfist,
-		gravitar,
 		keytar,
 		bombguy,
 		mooman,
+		gravitar,
 		spotlight,
 		matador,
 		transparency,
@@ -40,25 +48,39 @@ public class Player : MonoBehaviour {
 		wings
 	}
 	
-	characterTags currentChar = characterTags.wings;
+	characterTags currentChar;
 	physicsStates physicsFlag;
 	
 	// Use this for initialization
 	void Start () 
 	{
+		startModel = model;
+		startCape = cape;
+		SetUpProps();
+		StartCoroutine(PlayerSwap());
+		startingZ = transform.position.z;
 		cc = GetComponent<CharacterController>();
 	}
 	
 	// Update is called once per frame
 	void Update () 
 	{
-		PlayerInput();
-		PhysicsFlags();
-		Movement();
+		DevControls();
+		if(!ragdoll[0].collider.enabled) 
+		{
+			ragdollMode = false;
+			PlayerInput();
+			PhysicsFlags();
+			Movement();
+		}
+		else
+			ragdollMode = true;
 	}
 	
 	void Movement()
 	{
+		if(transform.position.z != startingZ) //Keep the player on the starting Z axis
+			transform.position = new Vector3(transform.position.x,transform.position.y, startingZ);
 		moveDirection.y = 0;
 		moveDirection.Normalize();
 		if(ySpeed > maxGravity) ySpeed += gravityRate;	//Greater than because gravity is a negative value
@@ -84,7 +106,7 @@ public class Player : MonoBehaviour {
 					physicsFlag = physicsStates.fall;
 				break;
 			case physicsStates.punch:
-				PlayAnimation("Idle",1);
+				PlayAnimation("RightPunch",1);
 				break;
 			case physicsStates.special:
 				PlayAnimation("Idle",1);
@@ -98,9 +120,102 @@ public class Player : MonoBehaviour {
 		}
 	}
 	
-	void State(physicsStates state,string anim, bool interrupt)
+	void CharacterStates()
 	{
-		
+		switch(currentSkin)
+		{
+			case 0:
+				currentChar = characterTags.bigfist;
+				foreach(GameObject props in fistProps)
+					props.SetActive(true);
+				break;
+			case 1:	
+				currentChar = characterTags.keytar;
+				foreach(GameObject props in keytarProps)
+					props.SetActive(true);
+				break;
+			case 2:	
+				currentChar = characterTags.bombguy;
+				foreach(GameObject props in bombProps)
+					props.SetActive(true);
+				break;
+			case 3:
+				currentChar = characterTags.mooman;
+				foreach(GameObject props in mooProps)
+					props.SetActive(true);
+				break;
+			case 4:	
+				currentChar = characterTags.gravitar;
+				foreach(GameObject props in gravitarProps)
+					props.SetActive(true);
+				break;
+			case 5:	
+				currentChar = characterTags.spotlight;
+				foreach(GameObject props in spotlightProps)
+					props.SetActive(true);
+				break;
+			case 6:	
+				currentChar = characterTags.matador;
+				foreach(GameObject props in matadorProps)
+					props.SetActive(true);
+				break;
+			case 7:	
+				currentChar = characterTags.transparency;
+				model = transparentModel;
+				cape = transparentCape;
+				foreach(GameObject props in transparencyProps)
+					props.SetActive(true);
+				break;
+			case 8:	
+				currentChar = characterTags.tubs;
+				foreach(GameObject props in tubsProps)
+					props.SetActive(true);
+				break;
+			case 9:	
+				currentChar = characterTags.wings;
+				foreach(GameObject props in wingsProps)
+					props.SetActive(true);
+				break;
+		}
+	}
+	
+	void SetUpProps()
+	{
+		props = new GameObject[10][];
+		props[0] = fistProps;
+		props[1] = mooProps;
+		props[2] = transparencyProps;
+		props[3] = bombProps;
+		props[4] = keytarProps;
+		props[5] = gravitarProps;
+		props[6] = spotlightProps;
+		props[7] = matadorProps;
+		props[8] = tubsProps;
+		props[9] = wingsProps;
+	}
+	
+	void PropsOff()
+	{
+		for(int i=0; i<10; i++)
+		{
+			foreach(GameObject prop in props[i])
+				prop.SetActive(false);
+		}
+	}
+	
+//	void State(physicsStates state,string anim, bool interrupt)
+//	{
+//		
+//	}
+	
+	void DevControls()
+	{
+		if(Input.GetKey(KeyCode.R))
+			Application.LoadLevel(Application.loadedLevel);
+		if(Input.GetKeyDown(KeyCode.E))
+			SidekickCycle();
+		if(Input.GetKeyDown(KeyCode.Q))
+			ToggleRagdoll();	
 	}
 	
 	void PlayerInput()
@@ -109,6 +224,8 @@ public class Player : MonoBehaviour {
 		{
 			if(currentChar == characterTags.wings)
 				jumpAgain = true;
+			else
+				jumpAgain = false;
 			physicsFlag = physicsStates.run;
 			if( Input.GetAxis("Horizontal") == 0)
 				physicsFlag = physicsStates.idle;
@@ -145,8 +262,6 @@ public class Player : MonoBehaviour {
 			//Keyboard - Left click
 			//Controller - X
 		}
-		if(Input.GetKey(KeyCode.R))
-			Application.LoadLevel(Application.loadedLevel);
 	}
 	
 	void OnGUI()
@@ -197,14 +312,38 @@ public class Player : MonoBehaviour {
 	{
 		physicsFlag = physicsStates.swap;
 	}
-
 	
-	void ToggleRagdoll(bool currentState)	//Use when the character dies or is thrown
+	void SidekickCycle()
 	{
+		if(currentSkin < skin.Length-1)
+			currentSkin++;
+		else
+			currentSkin = 0;
+		model = startModel;
+		cape = startCape;
+		model.mainTexture = skin[currentSkin];
+		cape.mainTexture = skin[currentSkin];
+		PropsOff();
+		CharacterStates();
+		StopAllCoroutines();
+		StartCoroutine(PlayerSwap());
+
+	}
+	
+	void ToggleRagdoll()	//Use when the character dies or is thrown
+	{
+		bool currentState = ragdoll[0].collider.enabled;
+		Animation animator = GetComponent<Animation>();
 		for(int i=0; i<ragdoll.Length; i++)
 		{
-			ragdoll[i].SetActive(!currentState);
+			ragdoll[i].collider.enabled = !currentState;
 		}
+		animator.enabled = currentState;
+		if(currentState)
+			modelObj.transform.parent=null;
+		else
+			modelObj.transform.parent=transform;
+			
 	}
 	
 	#region PlayAnimation
@@ -228,19 +367,16 @@ public class Player : MonoBehaviour {
 		animation.CrossFade(clip,.2f);
 	}
 	
-	IEnumerator AnimationBuildup(string startAnim, string endAnim,float input, bool value)
-	{
-		PlayAnimation(startAnim,input);
-		yield return new WaitForSeconds(animation[startAnim].length*input*2);
-		BoolToggle(ref running);
-		//PlayAnimation("Run", input*2);
-		yield return new WaitForSeconds(animation[startAnim].length*input*2);
-	}
-	
 	IEnumerator PlayerSwap()
 	{
 		//Wait ten seconds
-		yield return new WaitForSeconds(10);
+		for(int i=0; i<10;i++)
+		{
+			yield return new WaitForSeconds(1);
+			print (i);
+		}
+		SidekickCycle();
+		StartCoroutine(PlayerSwap());
 		//Swap
 	}
 	

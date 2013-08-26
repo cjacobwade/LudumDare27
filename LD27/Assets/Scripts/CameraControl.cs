@@ -3,7 +3,7 @@ using System.Collections;
 
 public class CameraControl : MonoBehaviour {
 	
-	public GameObject player;
+	public GameObject player,ragdoll;
 	private Vector3 position, playerPosition, playerMovement, difference;
 	private Vector3 moveDirection;
 	CharacterController cc;
@@ -18,23 +18,27 @@ public class CameraControl : MonoBehaviour {
 	// Update is called once per frame
 	void Update () 
 	{
+		//Used these to figure out camera controls
 		position = transform.position;
 		playerPosition = player.transform.position;
-		difference = player.transform.position - transform.position;
-		playerMovement = Player.moveDirection;
-		moveDirection = Vector3.zero;
-		CameraBounds(true,2,0);
-		CameraBounds(false,-.1f,-2f);
-		transform.Translate(moveDirection*Time.deltaTime);
-		//cc.Move(moveDirection*Time.deltaTime);
-//		if(player.transform.position.y )
-//		transform.position = new Vector3(player.transform.position.x,transform.position.y, transform.position.z);
-		
+		if(Player.ragdollMode)
+			FollowTarget(ragdoll);
+		else
+			FollowTarget(player);
 	}
 	
-	void CameraBounds(bool x, float maxDifference, float maxDifference2)
+	void FollowTarget(GameObject target)
 	{
-		if(difference.magnitude > 15) transform.position = new Vector3(player.transform.position.x,player.transform.position.y, transform.position.z);
+		difference = target.transform.position - transform.position;
+		moveDirection = Vector3.zero;
+		CameraBounds(true,2,0,target);
+		CameraBounds(false,-.1f,-2f,target);
+		transform.Translate(moveDirection*Time.deltaTime);
+	}
+	
+	void CameraBounds(bool x, float maxDifference, float maxDifference2, GameObject target)
+	{
+		if(difference.magnitude > 15) transform.position = new Vector3(target.transform.position.x,target.transform.position.y, transform.position.z);
 		
 		switch(x)
 		{
