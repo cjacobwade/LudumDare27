@@ -1,0 +1,267 @@
+/* USE FOR REFERENCE ONLY
+using UnityEngine;
+using System.Collections;
+using System.Collections.Generic;
+
+public class Terrain 
+{
+	public TerrainGenerator terrainGenerator;
+    public List<Vector3> borderVertices = new List<Vector3>();
+	public List<Vector3> caveBorderVertices = new List<Vector3>();
+	public List<Vector3> keyPoints = new List<Vector3>();
+	
+    public float startX;
+    public float endX;
+ 
+    // keep track of what we are rendering in the terrain
+    int _fromKeyPointI;
+    int _toKeyPointI;
+ 
+	public const float TERRAIN_SEGMENT_WIDTH = 1;
+	public const float TERRAIN_SEGMENT_HEIGHT = 12;
+	public const float GRIND_SEGMENT_HEIGHT = 0.15f;
+	public const int CAVE_HEIGHT = 17;
+	public const int CAVE_CEILING_THICKNESS = 3;
+ 
+    private GameObject _originGameObject;
+ 
+    public Terrain( GameObject originGameObject )
+	{
+        _originGameObject = originGameObject;
+ 
+        terrainGenerator = new TerrainGenerator();
+    }
+ 
+    public void generateMeshWithWidth( float width, MeshFilter meshFilter )
+	{
+        terrainGenerator.resetToLastUsedIndex( _toKeyPointI );
+ 
+        _fromKeyPointI = 0;
+        _toKeyPointI = 0;
+ 
+        while( terrainGenerator[++_toKeyPointI].x < width )
+		{
+			//UnityEngine.Debug.Log("Terrain: X Less than Width @@@ " + terrainGenerator[_toKeyPointI].x + " @@@ " + width);
+		}
+ 		
+        drawGround( meshFilter );
+    }
+	
+    public void Reset()
+	{
+		terrainGenerator = new TerrainGenerator();
+		_fromKeyPointI = 0;
+        _toKeyPointI = 0;	
+		endX = 0;
+    }	
+ 
+    private void drawGround( MeshFilter meshFilter)
+	{
+        borderVertices.Clear();
+		keyPoints.Clear();
+ 
+        List<Vector3> terrainVertices = new List<Vector3>();
+        List<Vector2> terrainTexCoords = new List<Vector2>();
+        List<int> triangles = new List<int>();
+        int triangleIndex = -2;
+ 
+        Vector3 keyPoint0, keyPoint1, pt0, pt1 = new Vector3(0, 0, TerrainGenerator.Z_POSITION);
+        keyPoint0 = terrainGenerator[_fromKeyPointI];
+ 
+        for( int i = _fromKeyPointI + 1; i <= _toKeyPointI; i++ ) 
+		{
+            keyPoint1 = terrainGenerator[i];
+						
+            //triangle strip between p0 and p1
+            int totalSegments = Mathf.CeilToInt( ( keyPoint1.x - keyPoint0.x) / TERRAIN_SEGMENT_WIDTH);
+            float segmentWidth = ( keyPoint1.x - keyPoint0.x ) / totalSegments; // actual, calculated width of each segment
+            float da = Mathf.PI / totalSegments;
+            float ymid = ( keyPoint0.y + keyPoint1.y ) / 2;
+            float amplitude = ( keyPoint0.y - keyPoint1.y ) / 2;
+            pt0 = keyPoint0;
+ 
+            // add 1 on the last loop to ensure the keypoint itself gets a vert pair to match up with the next mesh
+            if( i == _toKeyPointI )
+			{
+                totalSegments++;
+            }
+ 
+            for(int j = 0; j <= totalSegments; j++)
+			{
+                pt1.x = keyPoint0.x + j * segmentWidth;
+                pt1.y = ymid + amplitude * Mathf.Cos( da * j );
+ 
+                Vector3 topVert = new Vector3( pt0.x, pt0.y, TerrainGenerator.Z_POSITION );
+ 
+                // We only need the top vert for the border
+				// Since the first new vert of each piece between key points will be the same as the last point, 
+				// dont add it to the borderVerticies
+                if(j > 0) borderVertices.Add( topVert );
+ 
+                terrainVertices.Add( topVert );
+                terrainTexCoords.Add( new Vector2( pt0.x / TERRAIN_SEGMENT_HEIGHT / 1.5f, 1 ) );
+                terrainVertices.Add( new Vector3( pt0.x  - TERRAIN_SEGMENT_HEIGHT, pt0.y - TERRAIN_SEGMENT_HEIGHT * 1.5f, TerrainGenerator.Z_POSITION ) );
+                terrainTexCoords.Add( new Vector2( pt0.x / TERRAIN_SEGMENT_HEIGHT / 1.5f, 0 ) );
+				
+                if( triangleIndex >= 0 ) 
+				{
+                    triangles.Add( triangleIndex + 2 );
+                    triangles.Add( triangleIndex + 1 );
+                    triangles.Add( triangleIndex + 0 );
+                    triangles.Add( triangleIndex + 3 );
+                    triangles.Add( triangleIndex + 1 );
+                    triangles.Add( triangleIndex + 2 );
+                }
+                triangleIndex += 2;
+				
+				endX = pt0.x;
+                pt0 = pt1;				
+            }
+			
+			keyPoint0 = keyPoint1;	
+			keyPoints.Add ( keyPoint0 );
+        }			
+			
+		// setup the mesh
+        var mesh = meshFilter.mesh;
+		
+        mesh.Clear();
+        mesh.vertices = terrainVertices.ToArray();
+		mesh.uv = terrainTexCoords.ToArray();
+		mesh.triangles = triangles.ToArray();
+		
+		mesh.Optimize();
+        mesh.RecalculateNormals();
+        mesh.RecalculateBounds();
+        
+		addGroundMeshCollider( meshFilter, borderVertices );
+    }
+
+	public void drawCave( MeshFilter meshFilter)
+	{ 		
+		caveBorderVertices.Clear();
+		
+        var terrainVertices = new List<Vector3>();
+        var terrainTexCoords = new List<Vector2>();
+        var triangles = new List<int>();
+        var triangleIndex = -2;
+ 
+        Vector3 pt0 = new Vector3(0, 0, TerrainGenerator.Z_POSITION);
+ 
+        for( int i = 1; i < borderVertices.Count - 1; i++ ) 
+		{
+			pt0 = borderVertices[i];
+
+            var topVert = new Vector3( pt0.x, pt0.y + CAVE_HEIGHT, 5 );
+			
+			caveBorderVertices.Add( topVert );
+			
+            terrainVertices.Add( topVert );
+            terrainTexCoords.Add( new Vector2( pt0.x / CAVE_HEIGHT, 1 ) );					
+            terrainVertices.Add( new Vector3( pt0.x, pt0.y, 5 ) );
+            terrainTexCoords.Add( new Vector2( pt0.x / CAVE_HEIGHT, 0 ) );
+	
+            if( triangleIndex >= 0 ) 
+			{
+                triangles.Add( triangleIndex + 2 );
+                triangles.Add( triangleIndex + 1 );
+                triangles.Add( triangleIndex + 0 );
+                triangles.Add( triangleIndex + 3 );
+                triangles.Add( triangleIndex + 1 );
+                triangles.Add( triangleIndex + 2 );
+            }
+            triangleIndex += 2;
+						
+        }			
+			
+        var mesh = meshFilter.mesh;
+		
+        mesh.Clear();
+        mesh.vertices = terrainVertices.ToArray();
+		mesh.uv = terrainTexCoords.ToArray();
+		mesh.triangles = triangles.ToArray();
+		
+		mesh.Optimize();
+        mesh.RecalculateNormals();
+        mesh.RecalculateBounds();
+		
+		addCaveMeshCollider( meshFilter, caveBorderVertices );
+        
+    }
+	
+	private void addGroundMeshCollider(MeshFilter meshFilter, List<Vector3> borderVerts)
+	{
+		// add a vert on the front and back so that the collider has some depth
+		borderVerts.Insert( 0, new Vector3( borderVerts[0].x, borderVerts[0].y - TERRAIN_SEGMENT_HEIGHT * 2  + terrainGenerator.deltaIncline, borderVerts[0].z ) );
+		borderVerts.Add( new Vector3( borderVerts[borderVerts.Count - 1].x, borderVerts[borderVerts.Count - 1].y - TERRAIN_SEGMENT_HEIGHT * 2  + terrainGenerator.deltaIncline, borderVerts[borderVerts.Count - 1].z ) );
+		
+		List<Vector3> verticesList = new List<Vector3>( borderVerts );
+		List<int> indices = new List<int>();
+		
+		for( var i = 0; i < borderVerts.Count; i++ )
+			verticesList.Add( new Vector3( borderVerts[i].x, borderVerts[i].y, TerrainGenerator.Z_POSITION + 10 ) );
+		
+		int N = borderVerts.Count;
+		for( var i = 0; i < borderVerts.Count; i++ )
+		{
+			int i1 = i;
+			int i2 = ( i1 + 1 ) % N;
+			int i3 = i1 + N;
+			int i4 = i2 + N;
+			
+			indices.Add ( i1 );
+			indices.Add ( i3 );
+			indices.Add ( i4 );
+			indices.Add ( i1 );
+			indices.Add ( i4 );
+			indices.Add ( i2 );
+		}
+		
+		var mesh = new Mesh();
+		mesh.vertices = verticesList.ToArray();
+		mesh.triangles = indices.ToArray();
+		mesh.RecalculateNormals();
+		mesh.RecalculateBounds();
+		
+		meshFilter.GetComponent<MeshCollider>().sharedMesh = mesh;		
+    }
+	
+	private void addCaveMeshCollider(MeshFilter meshFilter, List<Vector3> borderVerts)
+	{
+		// add the keypoints to create low res ceiling collision
+		for( var i = 0; i < keyPoints.Count; i++ )
+			borderVerts.Insert(0, new Vector3( keyPoints[i].x, keyPoints[i].y + CAVE_HEIGHT - CAVE_CEILING_THICKNESS, borderVerts[0].z ) );
+		
+		List<Vector3> verticesList = new List<Vector3>( borderVerts );
+		List<int> indices = new List<int>();
+		
+		for( var i = 0; i < borderVerts.Count; i++ )
+			verticesList.Add( new Vector3( borderVerts[i].x, borderVerts[i].y, TerrainGenerator.Z_POSITION ) );
+		
+		int N = borderVerts.Count;
+		for( var i = 0; i < borderVerts.Count; i++ )
+		{
+			int i1 = i;
+			int i2 = ( i1 + 1 ) % N;
+			int i3 = i1 + N;
+			int i4 = i2 + N;
+			
+			indices.Add ( i2 );
+			indices.Add ( i4 );
+			indices.Add ( i1 );
+			indices.Add ( i4 );
+			indices.Add ( i3 );
+			indices.Add ( i1 );
+		}
+		
+		var mesh = new Mesh();
+		mesh.vertices = verticesList.ToArray();
+		mesh.triangles = indices.ToArray();
+		mesh.RecalculateNormals();
+		mesh.RecalculateBounds();
+		
+		meshFilter.GetComponent<MeshCollider>().sharedMesh = mesh;		
+    }	
+}
+
+*/
