@@ -1,0 +1,42 @@
+/*
+using UnityEngine;
+using System.Collections;
+using Robomodo.Util;
+
+public class PlayerController : MonoBehaviour 
+{
+	private PlayerPhysics _physics;
+	private PlayerInput _input;
+	private PlayerAnimation _anim;
+	private static PlayerController _instance;
+	
+	public PlayerPhysics playerPhysics
+	{
+		get { return _physics; }
+	}
+	
+	public PlayerInput playerInput
+	{
+		get { return _input; }
+	}
+	
+	public PlayerAnimation playerAnim
+	{
+		get { return _anim; }
+	}
+	
+	public static PlayerController Instance
+	{
+		get { return _instance; }
+	}
+
+	void Awake()
+	{
+		_instance = this;
+		
+		_physics = GetComponent<PlayerPhysics>();
+		_anim = GetComponent<PlayerAnimation>();
+		_input = GetComponent<PlayerInput>();
+	}
+}
+*/
