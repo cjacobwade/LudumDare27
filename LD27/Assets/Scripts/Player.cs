@@ -4,11 +4,11 @@ using System.Collections;
 public class Player : MonoBehaviour {
 	
 	CharacterController cc;
-	Vector3 moveDirection;
+	public static Vector3 moveDirection;
 	public int moveSpeed, jumpSpeed;
 	public float maxGravity, gravityRate;
 	float ySpeed = 0;
-	bool running = false;
+	bool running = false,jumpAgain = false;
 	
 	public GameObject[] ragdoll;
 	public Texture2D[] skin;
@@ -40,7 +40,7 @@ public class Player : MonoBehaviour {
 		wings
 	}
 	
-	characterTags currentChar;
+	characterTags currentChar = characterTags.wings;
 	physicsStates physicsFlag;
 	
 	// Use this for initialization
@@ -107,6 +107,8 @@ public class Player : MonoBehaviour {
 	{
 		if(cc.isGrounded)
 		{
+			if(currentChar == characterTags.wings)
+				jumpAgain = true;
 			physicsFlag = physicsStates.run;
 			if( Input.GetAxis("Horizontal") == 0)
 				physicsFlag = physicsStates.idle;
@@ -120,7 +122,11 @@ public class Player : MonoBehaviour {
 		
 		if(Input.GetButtonDown("Jump"))
 		{
-			Jump ();
+			if(cc.isGrounded)
+				Jump (1);
+			else if(jumpAgain)
+				Jump(0.65f);
+				
 			print("Jump");
 			//Keyboard - Space
 			//Controller - A
@@ -152,19 +158,19 @@ public class Player : MonoBehaviour {
 		}	
 	}
 		
-	void Jump()
+	void Jump(float jumpMultiplier)
 	{
-		if(cc.isGrounded)
-		{
-			if(moveDirection.x>0)
-				PlayAnimation("RightJump",1,.2f);
-			else if(moveDirection.x<0)
-				PlayAnimation("LeftJump",1,.2f);
-			else
-				PlayAnimation("Jump",1,.2f);
-			ySpeed = jumpSpeed;
-			physicsFlag = physicsStates.jump;
-		}
+
+		if(moveDirection.x>0)
+			PlayAnimation("RightJump",1,.2f);
+		else if(moveDirection.x<0)
+			PlayAnimation("LeftJump",1,.2f);
+		else
+			PlayAnimation("Jump",1,.2f);
+		ySpeed = jumpSpeed*jumpMultiplier;
+		physicsFlag = physicsStates.jump;
+		if(!cc.isGrounded)
+			jumpAgain = false;
 	}
 	
 	void Fall()
